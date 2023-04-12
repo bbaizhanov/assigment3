@@ -2,9 +2,7 @@ package funcii
 
 import (
 	"Bookstore/objects"
-	"fmt"
 	"sort"
-	"strconv"
 )
 
 type Methods interface {
@@ -29,13 +27,9 @@ func New() Bookshelf {
 func (bookshelf *Bookshelf) Find(id int) objects.Book {
 	var ans objects.Book
 	for _, book := range bookshelf.books {
-		Id, err := strconv.Atoi(book.Id)
-		if err != nil {
-			fmt.Println("vse ne po kaifu")
-		}
-		if Id == id {
+
+		if book.Id == id {
 			ans = book
-			fmt.Println(book.Title, book.Cost, book.Desc)
 		}
 	}
 	return ans
@@ -46,6 +40,7 @@ func (bookshelf *Bookshelf) Search(title string) objects.Book {
 	for _, book := range bookshelf.books {
 		if book.Title == title {
 			ans = book
+			break
 		}
 	}
 	return ans
@@ -55,17 +50,14 @@ func (bookshelf *Bookshelf) GetAll() []objects.Book {
 	return bookshelf.books
 }
 
-func (bookshelf *Bookshelf) Update(id int, title string, desc string) objects.Book {
+func (bookshelf *Bookshelf) Update(Book objects.Book) objects.Book {
 	var ans objects.Book
 	for _, book := range bookshelf.books {
-		Id, err := strconv.Atoi(book.Id)
-		if err != nil {
-			fmt.Println("Oshibka")
-		}
-		if Id == id {
-			book.Title = title
-			book.Desc = desc
+
+		if Book.Id == book.Id {
+			book = Book
 			ans = book
+			break
 		}
 	}
 	return ans
@@ -74,11 +66,8 @@ func (bookshelf *Bookshelf) Update(id int, title string, desc string) objects.Bo
 func (bookshelf Bookshelf) Delete(id int) objects.Book {
 	var ans objects.Book
 	for i, book := range bookshelf.books {
-		Id, err := strconv.Atoi(book.Id)
-		if err != nil {
-			fmt.Println("vse ne po kaifu")
-		}
-		if Id == id {
+
+		if book.Id == id {
 			ans = book
 			bookshelf.books = append(bookshelf.books[:i], bookshelf.books[i+1:]...)
 			break

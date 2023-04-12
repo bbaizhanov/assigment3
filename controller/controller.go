@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Bookcontroller interface {
+type BookController interface {
 	Find(id int) objects.Book
 	Search(title string) objects.Book
 	GetAll() []objects.Book
@@ -27,11 +27,16 @@ func New(bookShelf funcii.Bookshelf) Controller {
 	}
 }
 
-func (c Controller) Update(id int, title string, desc string) objects.Book {
-	return c.bookshelf.Update(id, title, desc)
+func (c *Controller) Update(ctx *gin.Context) objects.Book {
+	var book objects.Book
+	err := ctx.BindJSON(&book)
+	if err != nil {
+		return objects.Book{}
+	}
+	return c.bookshelf.Update(book)
 }
 
-func (c Controller) Add(ctx *gin.Context) objects.Book {
+func (c *Controller) Add(ctx *gin.Context) objects.Book {
 	var book objects.Book
 	err := ctx.BindJSON(&book)
 	if err != nil {
@@ -41,26 +46,41 @@ func (c Controller) Add(ctx *gin.Context) objects.Book {
 	return book
 }
 
-func (c Controller) Find(id int) objects.Book {
-	return c.bookshelf.Find(id)
+func (c *Controller) Find(ctx *gin.Context) objects.Book {
+	var ID int
+	err := ctx.BindJSON(&ID)
+	if err != nil {
+		return objects.Book{}
+	}
+	return c.bookshelf.Find(ID)
 }
 
-func (c Controller) Search(title string) objects.Book {
-	return c.bookshelf.Search(title)
+func (c *Controller) Search(ctx *gin.Context) objects.Book {
+	var Title string
+	err := ctx.BindJSON(&Title)
+	if err != nil {
+		return objects.Book{}
+	}
+	return c.bookshelf.Search(Title)
 }
 
-func (c Controller) GetAll() []objects.Book {
+func (c *Controller) GetAll() []objects.Book {
 	return c.bookshelf.GetAll()
 }
 
-func (c Controller) Delete(id int) objects.Book {
-	return c.bookshelf.Delete(id)
+func (c *Controller) Delete(ctx *gin.Context) objects.Book {
+	var ID int
+	err := ctx.BindJSON(&ID)
+	if err != nil {
+		return objects.Book{}
+	}
+	return c.bookshelf.Delete(ID)
 }
 
-func (c Controller) GetSortedAscending() []objects.Book {
+func (c *Controller) GetSortedAscending() []objects.Book {
 	return c.bookshelf.GetSortedAscending()
 }
 
-func (c Controller) GetSortedDescending() []objects.Book {
+func (c *Controller) GetSortedDescending() []objects.Book {
 	return c.bookshelf.GetSortedDescending()
 }
